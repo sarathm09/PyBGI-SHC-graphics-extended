@@ -1,5 +1,5 @@
 from Tkinter import *
-from math import sqrt
+from math import *
 
 
 class UI(Frame):
@@ -39,6 +39,11 @@ class UI(Frame):
         self.temppie = self.cs.create_arc(0, 0, 0, 0, outline="#f0f0f0", style=PIESLICE)
         self.tempbez = self.cs.create_arc(0, 0, 0, 0, outline="#f0f0f0")
         self.temppoly = self.cs.create_polygon(0, 0, 0, 0, outline="#f0f0f0")
+
+
+
+        self.d = 20
+
 
         self.initUi()
         self.actions()
@@ -129,7 +134,43 @@ class UI(Frame):
             self.temppoints.append(self.type)
 
     def mouse_wheel(self, e):
-        print e.delta
+        if len(self.temppoints) == 0:
+            mat = [[self.points[-1][0], self.points[-1][1]],
+                   [self.points[-2][0], self.points[-2][1]]]
+            if self.d>20:
+                mat = self.mat
+            print mat
+            self.mat = Anim().rotate(mat, self.d)
+            self.d += 20
+            print self.mat
+            mat = self.mat
+            self.cs.create_rectangle(mat[0][0], mat[0][1], mat[1][0], mat[1][1])
+
+
+class Anim():
+
+    def __init__(self):
+        pass
+
+    def rotate(self, mat, deg):
+        te = mat
+        mat[0][0] = -1 * (mat[1][0]-mat[0][0])/2
+        mat[0][1] = -1 * (mat[1][1]-mat[0][1])/2
+        # deg = 3.14*deg/180
+        rot = [[sin(deg), -1*cos(deg)],
+                [cos(deg), sin(deg)]]
+        res = []
+        for i in xrange(len(mat)):
+            res.append([])
+            for j in xrange(2):
+                res[i].append(0)
+                for k in xrange(2):
+                    res[i][j] += mat[i][j] * rot[i][j]
+
+        for i in xrange(len(mat)):
+            mat[0:2] = res[0:2]
+
+        return mat
 
 
 
